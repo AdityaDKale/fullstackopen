@@ -2,8 +2,28 @@ import { useState } from 'react'
 
 const Button = ({onClick, text}) => <button onClick={ onClick }>{ text }</button>
 const Heading = ({text}) => <h2>{ text }</h2>
-const Stat_part = ({text, val}) => <div>{text} {val}</div>
-const Stat_part_extra = ({text, val, extra}) => <div>{text} {val} {extra}</div>
+const StatisticLine = ({text, value, extra=''}) => <tr><td>{text}</td><td>{value}</td><td>{extra}</td></tr>
+const Statistics = (props) => {
+    const good = props.good
+    const neutral = props.neutral
+    const bad = props.bad
+    if (good === 0 && neutral === 0 && bad === 0) {
+        return (
+            <div>No feedback given</div>
+        )}
+    return (
+    <table>
+        <tbody>
+        <StatisticLine text='good' value={good} />
+        <StatisticLine text='neutral' value={neutral} />
+        <StatisticLine text='bad' value={bad} />
+        <StatisticLine text='all' value={good + neutral + bad} />
+        <StatisticLine text='average' value={(good - bad) / (good + neutral + bad)} />
+        <StatisticLine text='positive' value={(good) / (good + neutral + bad) * 100} extra='%' /> 
+        </tbody>
+    </table>
+    )
+}
 
 const App = () => {
   const [good, setGood] = useState(0)
@@ -20,13 +40,8 @@ const App = () => {
       <Button onClick={addNeutral} text={'neutral'}/>
       <Button onClick={addBad} text={'bad'}/>
       <Heading text='statistics' />
-      <Stat_part text='good' val={good} />
-      <Stat_part text='neutral' val={neutral} />
-      <Stat_part text='bad' val={bad} />
-      <Stat_part text='all' val={good + neutral + bad} />
-      <Stat_part text='average' val={(good - bad) / (good + neutral + bad)} />
-      <Stat_part_extra text='positive' val={(good) / (good + neutral + bad) * 100} extra='%' /> 
-    </div>
+      <Statistics good={good} neutral={neutral} bad={bad}/>
+   </div>
   )
 }
 export default App
